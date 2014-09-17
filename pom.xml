@@ -1,39 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cucumber-jvm-plugin</groupId>
-    <artifactId>cucumber-jvm-plugin</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>json-affermare</module>
-        <module>client-driver</module>
-        <module>jersey-client</module>
-        <module>cxf-client</module>
-    </modules>
+  <groupId>cucumber-jvm-plugin</groupId>
+  <artifactId>cucumber-jvm-plugin</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <modules>
+    <module>json-affermare</module>
+    <module>client-driver</module>
+    <module>jersey-client</module>
+    <module>cxf-client</module>
+  </modules>
 
-    <properties>
-        <cucumber.version>1.1.5</cucumber.version>
-        <junit.version>4.10</junit.version>
-    </properties>
+  <properties>
+    <cucumber.version>1.1.5</cucumber.version>
+    <junit.version>4.10</junit.version>
+  </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
 
-        </plugins>
-    </build>
+  <repositories>
+    <repository>
+      <id>internal</id>
+      <name>Artifactory Managed Internal Repository</name>
+      <url>http://172.16.20.240:8080/artifactory/libs-release-local</url>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <repository>
+      <id>internal</id>
+      <url>http://172.16.20.240:8080/artifactory/libs-release-local</url>
+    </repository>
+  </distributionManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
 
 
 </project>
