@@ -1,5 +1,6 @@
 package com.rest.model;
 
+import com.rest.json.parser.JSONValueExtractor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -112,24 +113,33 @@ public class JsonProcessor {
 
 
     public static Object getActualObject(JSONObject jsonObject, String key)  {
-        Object actual;
-        if (key.contains(".")) {
-            actual = jsonObject;
-            String[] keys = key.split("\\.");
-            for (String nestedKey : keys) {
-                actual = getValueFromJsonObject((JSONObject) actual, nestedKey);
-            }
-        } else {
-            actual = getValueFromJsonObject(jsonObject, key);
+        JSONValueExtractor extractor = new JSONValueExtractor(jsonObject, key);
+        if(extractor.directAccess()){
+            return extractor.directValue();
         }
-        return actual;
+        if(extractor.objectGraphAccess()){
+            return extractor.objectGraphValue();
+        }
+        return extractor.objectArrayValue();
     }
 
-    private static Object getValueFromJsonObject(JSONObject actual, String key) {
+    public static Object getValueFromJsonObject(JSONObject actual, String key) {
         try {
             return actual.get(key);
         } catch (JSONException e) {
             throw new RuntimeException("Key not found in json " + key);
         }
+    }
+
+    public static List<Object> getValueFromJsonArray(JSONArray actual, String key) {
+        List<Object> result = new ArrayList<Object>();
+        try {
+            for (int i = 0; i < actual.length(); i++) {
+                result.add(((JSONObject) actual.get(i)).get(key));
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException("Key not found in json " + key);
+        }
+        return result;
     }
 }

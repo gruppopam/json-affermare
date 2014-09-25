@@ -3,6 +3,7 @@ package com.rest.json.parser;
 import com.rest.model.CustomDataTable;
 import com.rest.model.JsonProcessor;
 import cucumber.api.DataTable;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -45,6 +46,13 @@ public class AssertHelper {
         Object json = new JSONTokener(response.json()).nextValue();
         List<JSONObject> jsonObjects = new JsonProcessor().filterAndSelectJsonObjects(selector, json, key, value);
         new CustomDataTable(table).matches(jsonObjects);
+    }
+
+    public static void assertCollectionWithFilterAndVerifyAssociatedList(String selector, DataTable table, String key, String value, String subSelector) throws Exception {
+        Object json = new JSONTokener(response.json()).nextValue();
+        List<JSONObject> filteredObjects = new JsonProcessor().filterAndSelectJsonObjects(selector, json, key, value);
+        List<JSONObject> result = new JsonProcessor().selectJsonObjects(selector + "." + subSelector, new JSONArray(filteredObjects));
+        new CustomDataTable(table).matches(result);
     }
 
     public static void assertCollectionWithInFilter(String selector, DataTable table, String key, String values) throws Exception {

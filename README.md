@@ -170,6 +170,25 @@ Filter specific object
                       | 1002    | Eric Evans    |
 
 
+Filter specific object And verify associated list
+
+                [
+                    {
+                            "id": 1000,
+                            "name": "Kent Beck",
+                            "phone_numbers": [
+                                {"type": "home", "number": 987654321},
+                                {"type": "office", "number": 123456789}
+                            ]
+                    }
+                ]
+
+                Then I filter the authors with "id" is "1000" and has the following "phone_numbers"
+                    | type        | number    |
+                    | home        | 987654321 |
+                    | office      | 123456789 |
+
+
 Values in object
 
                 {

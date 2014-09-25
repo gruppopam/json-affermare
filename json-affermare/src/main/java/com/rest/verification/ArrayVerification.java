@@ -51,12 +51,17 @@ public class ArrayVerification {
 
     @Then("^I verify that .+ has the following \"([^\"]*)\"$")
     public void I_verify_that_object_has_many_objects(String selector, DataTable table) throws Throwable {
-        assertCollection("root."+selector, table);
+        assertCollection("root." + selector, table);
     }
 
     @Then("^I filter the .+ with \"([^\"]*)\" is \"([^\"]*)\"$")
     public void I_filter_the_collection_with_specific_condition(String key, String value, DataTable table) throws Throwable {
         assertCollectionWithFilter("root", table, key, value);
+    }
+
+    @Then("^I filter the .+ with \"([^\"]*)\" is \"([^\"]*)\" and has the following \"([^\"]*)\"$")
+    public void I_filter_the_collection_with_specific_condition(String key, String value, String selector, DataTable table) throws Throwable {
+        assertCollectionWithFilterAndVerifyAssociatedList("root", table, key, value, selector);
     }
 
 
