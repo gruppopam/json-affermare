@@ -3,20 +3,25 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>cucumber-jvm-plugin</artifactId>
+        <artifactId>json-affermare</artifactId>
         <groupId>cucumber-jvm-plugin</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jersey-client</artifactId>
-
+    <artifactId>cxf-client-json-affermare</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-client</artifactId>
-            <version>0.7.0</version>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cucumber-jvm-plugin</groupId>
+            <artifactId>json-affermare-assertion</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -25,5 +30,8 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
+
+
 
 </project>

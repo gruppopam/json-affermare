@@ -28,7 +28,7 @@ query params and json payload.
 
                 Then I make a PUT to "books/increment_count.json"
 
-                Then I make a PUT to "authors/1000.json" with data
+                Then I make a PUT to "authors/1000.json" with body
                      |   {                          |
                      |       "id": 1000,            |
                      |       "name": "Kent Beck"    |
@@ -36,7 +36,7 @@ query params and json payload.
 
                 Then I make a POST to "books/create.json"
 
-                Then I make a POST to "authors/1000.json" with data
+                Then I make a POST to "authors/1000.json" with body
                      |   {                          |
                      |       "id": 1000,            |
                      |       "name": "Kent Beck"    |
@@ -44,6 +44,18 @@ query params and json payload.
 
                 Then I make a DELETE to "authors/1000.json"
 
+If you are using rest-assured client additionally these http requests are supported.
+
+                Then I make a PUT to "authors/1000.json" with params
+                     |   status | new_status |
+                     |  active  |   deleted  |
+
+                Then I make a POST to "authors/1000.json" with params
+                     |   status | new_status |
+                     |  active  |   deleted  |
+
+
+CXF client supports only GET request. Other requests will be added as needed.
 
 Response status verification Examples
 -----
@@ -61,27 +73,56 @@ JSON verification Examples
 
 The following examples shows various options with asserting the json response.
 
-Empty object
+Empty json
 
-                {}
+                {} || []
 
-                Then I verify that book is empty
+                Then I verify that the json book is empty
 
-Empty list
 
-                []
+Values in object
 
-                Then I verify that no authors are present
+                {
+                        "id": 1000,
+                        "name": "Kent Beck"
+                }
+
+                Then I verify that the json has the following author
+                      | id      | name      |
+                      | 1000    | Kent Beck |
+
+                Then I verify that the json does not have the following "attributes"
+                      | age      | phone      |
+
+
+
+One to one association
+
+                {
+                        "isbn": "isbn123",
+                        "name": "Test driven development"
+                        "author":
+                        {
+                            "id": 1000,
+                            "name": "Kent Beck"
+                        }
+                }
+
+                Then I verify that the json has the following book
+                  | isbn        | name                          | author.id | author.name   |
+                  | isbn123     | Test driven development       | 1000      |  Kent Beck    |
 
 List of primitive collection
 
                 ["Martin Fowler", "Kent Beck"]
 
-                Then I verify the list of author names are present
+
+                Then I verify that the json has the following author names
                       | Kent Beck        |
                       | Martin Fowler    |
 
-                Then I verify the list of author names are present in the same order
+
+                Then I verify that the json has the following author names in the same order
                       | Martin Fowler    |
                       | Kent Beck        |
 
@@ -99,18 +140,21 @@ List of objects
                     }
                 ]
 
-                Then I verify that the number of authors are "2"
+                Then I verify that the json has 2 authors
 
-                Then I verify that the following authors are present
+                Then I verify that the json has the following authors
                       | id      | name          |
                       | 1001    | Martin Fowler |
                       | 1000    | Kent Beck     |
 
-                Then I verify that the following authors are present in the same order
+                Then I verify that the json has the following authors in the same order
                       | id      | name          |
                       | 1000    | Kent Beck     |
                       | 1001    | Martin Fowler |
 
+                Then I verify that the json does not have the following "authors"
+                      | id      | name          |
+                      | 1002    | Eric Evans    |
 
 
 
@@ -137,11 +181,15 @@ List of objects with one to one association
                     }
                 ]
 
-                Then I verify that the following books are present
+                Then I verify that the json has the following books
                       | isbn        | name                    |   author.id | author.name      |
                       | isbn123     | Test driven development |     1000    | Kent Beck        |
                       | isbn124     | Refactoring             |     1001    | Martin Fowler    |
 
+
+
+The below assertions were added in the absence of proper support of one to many associations and will be removed shortly. Anything mentioned below
+assertions could be accomplished by one of the assertions mentioned above.
 
 Filter specific object
 
@@ -189,16 +237,6 @@ Filter specific object And verify associated list
                     | office      | 123456789 |
 
 
-Values in object
-
-                {
-                        "id": 1000,
-                        "name": "Kent Beck"
-                }
-
-                Then I verify that the following author is present
-                      | id      | name      |
-                      | 1000    | Kent Beck |
 
 One to one association
 
@@ -215,6 +253,10 @@ One to one association
                 Then I verify that book has a "author"
                   | id      | name          |
                   | 1000    | Kent Beck     |
+
+
+
+The below json assertion has been removed as the step definition was too generic and interfering with other step definitions.
 
 One to many association
 

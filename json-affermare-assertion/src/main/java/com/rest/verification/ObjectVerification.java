@@ -16,11 +16,8 @@ import static org.junit.Assert.fail;
 
 public class ObjectVerification {
 
-    @Then("^I verify that the following .+ is present$")
-    public void jsonObjectAssert(DataTable table) throws Throwable {
-        jsonObjectHasValues(table, response.json());
-    }
 
+    @Deprecated
     @Then("^I verify that .+ has a \"([^\"]*)\"")
     public void jsonObjectAssociatedObjectAssert(String selector, DataTable table) throws Throwable {
         String associatedJson = read(response.json(), "$." + selector).toString();
@@ -39,16 +36,19 @@ public class ObjectVerification {
         }
     }
 
-    @Then("^I verify that .+ is empty$")
-    public void I_verify_that_object_is_empty() throws Throwable {
-        assertThat(response.json(), is("{}"));
-    }
-
-    @Then("^I verify that book does not have \"([^\"]*)\"$")
     public void I_verify_that_object_does_not_have(String key) throws Throwable {
         JSONObject immediateParent = matchTreeNode("root");
         if (immediateParent.has(key))
             fail(String.format("Didn't expect to find %s in %s", key, immediateParent.toString()));
+    }
+
+    public void I_verify_that_object_is_empty() throws Throwable {
+        assertThat(response.json(), is("{}"));
+    }
+
+
+    public void jsonObjectAssert(DataTable table) throws Throwable {
+        jsonObjectHasValues(table, response.json());
     }
 
     private JSONObject matchTreeNode(String selector) throws JSONException {

@@ -40,8 +40,8 @@ public class JerseyClient {
         ResponseStorage.initialize(response);
     }
 
-    @Then("^I make a PUT to \"([^\"]*)\" with data$")
-    public void I_make_a_PUT_to_with_data(String path, DataTable table) throws Throwable {
+    @Then("^I make a PUT to \"([^\"]*)\" with body$")
+    public void I_make_a_PUT_to_with_body(String path, DataTable table) throws Throwable {
         Response response = new JerseyClientResponse(new Client().resource(BASE_URL + path)
                 .type(APPLICATION_JSON_TYPE)
                 .put(ClientResponse.class, payload(table)));
@@ -54,8 +54,8 @@ public class JerseyClient {
         ResponseStorage.initialize(response);
     }
 
-    @Then("^I make a POST to \"([^\"]*)\" with data$")
-    public void I_make_a_POST_to_with_data(String path, DataTable table) throws Throwable {
+    @Then("^I make a POST to \"([^\"]*)\" with body$")
+    public void I_make_a_POST_to_with_body(String path, DataTable table) throws Throwable {
         Response response = new JerseyClientResponse(new Client().resource(BASE_URL + path)
                 .type(APPLICATION_JSON_TYPE)
                 .post(ClientResponse.class, payload(table)));
