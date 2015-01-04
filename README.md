@@ -96,11 +96,11 @@ Values in object
 
 
 
-One to one association
+One to one association for object
 
                 {
                         "isbn": "isbn123",
-                        "name": "Test driven development"
+                        "name": "Test driven development",
                         "author":
                         {
                             "id": 1000,
@@ -111,6 +111,29 @@ One to one association
                 Then I verify that the json has the following book
                   | isbn        | name                          | author.id | author.name   |
                   | isbn123     | Test driven development       | 1000      |  Kent Beck    |
+
+One to many association for object
+
+                {
+                        "isbn": "isbn123",
+                        "name": "Test driven development",
+                        "authors":
+                        [
+                            {
+                                "id": 1000,
+                                "name": "Kent Beck"
+                            },
+                            {
+                                "id": 1001,
+                                "name": "Martin Fowler"
+                            }
+                        ]
+                }
+
+                Then I verify that the json has the following book with authors
+                  | isbn        | name                          | authors.id    | authors.name      |
+                  | isbn123     | Test driven development       | 1000          |  Kent Beck        |
+                  | isbn123     | Test driven development       | 1001          |  Martin Fowler    |
 
 List of primitive collection
 
@@ -186,6 +209,45 @@ List of objects with one to one association
                       | isbn123     | Test driven development |     1000    | Kent Beck        |
                       | isbn124     | Refactoring             |     1001    | Martin Fowler    |
 
+
+
+List of objects with one to many association
+
+                [
+                    {
+                        "isbn": "isbn123",
+                        "name": "Test driven development",
+                        "authors":
+                        [
+                            {
+                                "id": 1000,
+                                "name": "Kent Beck"
+                            },
+                            {
+                                "id": 1001,
+                                "name": "Marin Fowler"
+                            }
+
+                        ]
+                    },
+                    {
+                        "isbn": "isbn124",
+                        "name": "Refactoring",
+                        "authors":
+                        [
+                            {
+                                "id": 1001,
+                                "name": "Martin Fowler"
+                            }
+                        ]
+                    }
+                ]
+
+                Then I verify that the json has the following books
+                      | isbn        | name                    |   authors.id    | authors.name      |
+                      | isbn123     | Test driven development |     1000        | Kent Beck         |
+                      | isbn123     | Test driven development |     1001        | Martin Fowler     |
+                      | isbn124     | Refactoring             |     1001        | Martin Fowler     |
 
 
 The below assertions were added in the absence of proper support of one to many associations and will be removed shortly. Anything mentioned below

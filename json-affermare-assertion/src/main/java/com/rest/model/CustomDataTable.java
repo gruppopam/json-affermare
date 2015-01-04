@@ -39,7 +39,7 @@ public class CustomDataTable {
         return maps;
     }
 
-    public List<Object> tableAsPrimitiveList(Class<?> aClass){
+    public List<Object> tableAsPrimitiveList(Class<?> aClass) {
         return dataTable.asList(aClass);
     }
 
@@ -50,10 +50,10 @@ public class CustomDataTable {
     public void matches(List<JSONObject> actualJsonObjects) {
         List<Map<String, String>> resultTable = populateResultTable(actualJsonObjects);
         for (Map<String, String> actual : resultTable) {
-            try{
+            try {
                 assertTrue(maps.contains(actual));
-            }catch (AssertionError e){
-                fail("Data "+ actual + " is not found in " + maps);
+            } catch (AssertionError e) {
+                fail("Data " + actual + " is not found in " + maps);
             }
         }
     }
@@ -61,10 +61,10 @@ public class CustomDataTable {
     public void matchesPrimitive(List<Object> actualObjects) throws JSONException {
         List<Object> expectedList = this.tableAsPrimitiveList(actualObjects.get(0).getClass());
         for (Object actualObject : actualObjects) {
-            try{
+            try {
                 assertTrue(expectedList.contains(actualObject));
-            }catch (AssertionError e){
-                fail("Data "+ actualObject + " is not found in " + expectedList);
+            } catch (AssertionError e) {
+                fail("Data " + actualObject + " is not found in " + expectedList);
             }
         }
     }
@@ -94,11 +94,9 @@ public class CustomDataTable {
         return resultTable;
     }
 
-    private  List<String> getKeys() {
+    public List<String> getKeys() {
         ArrayList<String> keys = new ArrayList<String>();
-        for (Map<String, String> map : maps) {
-            keys.addAll(map.keySet());
-        }
+        keys.addAll(maps.get(0).keySet());
         return keys;
     }
 

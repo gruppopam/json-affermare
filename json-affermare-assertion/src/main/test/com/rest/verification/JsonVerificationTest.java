@@ -3,11 +3,7 @@ package com.rest.verification;
 import com.rest.response.Response;
 import com.rest.response.ResponseStorage;
 import cucumber.api.DataTable;
-import gherkin.formatter.model.DataTableRow;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static java.util.Arrays.asList;
 
@@ -57,6 +53,22 @@ public class JsonVerificationTest {
         DataTable table = DataTable.create(asList(
                 asList("isbn", "name", "author.id", "author.name"),
                 asList("isbn123", "Test driven development", "1000", "Kent Beck")
+        ));
+
+        ResponseStorage.initialize(getTestResponse(json));
+        new JsonVerification().I_verify_that_the_json_has_the_following("author", table);
+
+    }
+
+    @Test
+    public void shouldVerifyIfJsonObjectHasEntriesWithOneToManyAssociation() throws Throwable {
+        String json="{\"phone_numbers\":[{\"type\":\"office\",\"number\":987654321},{\"type\":\"home\",\"number\":123456789}],\"id\":123,\"name\":\"Fowler\"}";
+
+
+        DataTable table = DataTable.create(asList(
+                asList("id", "name", "phone_numbers.type", "phone_numbers.number"),
+                asList("123", "Fowler", "office", "987654321"),
+                asList("123", "Fowler", "home", "123456789")
         ));
 
         ResponseStorage.initialize(getTestResponse(json));

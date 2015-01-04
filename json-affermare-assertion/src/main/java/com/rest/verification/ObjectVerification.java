@@ -1,11 +1,14 @@
 package com.rest.verification;
 
 import com.rest.model.CustomDataTable;
+import com.rest.model.JsonFlattener;
+import com.rest.model.JsonParser;
 import cucumber.api.DataTable;
 import cucumber.api.java.en.Then;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.jayway.jsonpath.JsonPath.read;
@@ -48,7 +51,9 @@ public class ObjectVerification {
 
 
     public void jsonObjectAssert(DataTable table) throws Throwable {
-        jsonObjectHasValues(table, response.json());
+        List<JSONObject> parsedJsonObjects = new JsonParser(response.json()).parse();
+        List<JSONObject> flattenedJsonObjects = new JsonFlattener(parsedJsonObjects, table).flatten();
+        new CustomDataTable(table).matches(flattenedJsonObjects);
     }
 
     private JSONObject matchTreeNode(String selector) throws JSONException {

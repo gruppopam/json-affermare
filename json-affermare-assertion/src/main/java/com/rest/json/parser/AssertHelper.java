@@ -1,6 +1,8 @@
 package com.rest.json.parser;
 
 import com.rest.model.CustomDataTable;
+import com.rest.model.JsonFlattener;
+import com.rest.model.JsonParser;
 import com.rest.model.JsonProcessor;
 import cucumber.api.DataTable;
 import org.json.JSONArray;
@@ -20,9 +22,9 @@ import static org.junit.Assert.fail;
 public class AssertHelper {
 
     public static void assertCollection(String selector, DataTable table) throws Exception {
-        Object json = new JSONTokener(response.json()).nextValue();
-        List<JSONObject> jsonObjects = new JsonProcessor().selectJsonObjects(selector, json);
-        new CustomDataTable(table).matches(jsonObjects);
+        List<JSONObject> parsedJsonObjects = new JsonParser(response.json()).parse();
+        List<JSONObject> flattenedJsonObjects = new JsonFlattener(parsedJsonObjects, table).flatten();
+        new CustomDataTable(table).matches(flattenedJsonObjects);
     }
 
     public static void assertCollectionAsPrimitive(String selector, DataTable table) throws Exception {
