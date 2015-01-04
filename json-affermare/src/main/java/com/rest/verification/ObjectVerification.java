@@ -10,10 +10,9 @@ import java.util.Map;
 
 import static com.jayway.jsonpath.JsonPath.read;
 import static com.rest.response.ResponseStorage.response;
-import static junitx.framework.Assert.assertEquals;
-import static junitx.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 public class ObjectVerification {
 
@@ -42,7 +41,7 @@ public class ObjectVerification {
 
     @Then("^I verify that .+ is empty$")
     public void I_verify_that_object_is_empty() throws Throwable {
-        assertEquals(response.json(), "{}");
+        assertThat(response.json(), is("{}"));
     }
 
     @Then("^I verify that book does not have \"([^\"]*)\"$")

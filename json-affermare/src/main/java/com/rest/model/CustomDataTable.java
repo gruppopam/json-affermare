@@ -1,7 +1,6 @@
 package com.rest.model;
 
 import cucumber.api.DataTable;
-import junitx.framework.ListAssert;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,6 +12,8 @@ import java.util.Map;
 import static com.rest.model.JsonProcessor.getActualObject;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class CustomDataTable {
 
@@ -48,11 +49,24 @@ public class CustomDataTable {
 
     public void matches(List<JSONObject> actualJsonObjects) {
         List<Map<String, String>> resultTable = populateResultTable(actualJsonObjects);
-        ListAssert.assertEquals(maps, resultTable);
+        for (Map<String, String> actual : resultTable) {
+            try{
+                assertTrue(maps.contains(actual));
+            }catch (AssertionError e){
+                fail("Data "+ actual + " is not found in " + maps);
+            }
+        }
     }
 
     public void matchesPrimitive(List<Object> actualObjects) throws JSONException {
-        ListAssert.assertEquals(this.tableAsPrimitiveList(actualObjects.get(0).getClass()), actualObjects);
+        List<Object> expectedList = this.tableAsPrimitiveList(actualObjects.get(0).getClass());
+        for (Object actualObject : actualObjects) {
+            try{
+                assertTrue(expectedList.contains(actualObject));
+            }catch (AssertionError e){
+                fail("Data "+ actualObject + " is not found in " + expectedList);
+            }
+        }
     }
 
     public void matchesPrimitiveWithOrder(List<Object> actualObjects) throws JSONException {

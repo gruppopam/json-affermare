@@ -13,8 +13,9 @@ import java.util.List;
 import static com.jayway.jsonassert.JsonAssert.emptyCollection;
 import static com.jayway.jsonassert.JsonAssert.with;
 import static com.rest.response.ResponseStorage.response;
-import static junitx.framework.Assert.fail;
-import static junitx.framework.ComparableAssert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class AssertHelper {
 
@@ -66,13 +67,13 @@ public class AssertHelper {
     public static void assertEmpty(String selector) throws JSONException {
         Object json = new JSONTokener(response.json()).nextValue();
         List<JSONObject> resultJsonObjects = new JsonProcessor().selectJsonObjects(selector, json);
-        assertEquals(0, resultJsonObjects.size());
+        assertThat(resultJsonObjects.size(), is(0));
     }
 
     public static void assertCount(String selector, Integer count) throws JSONException {
         Object json = new JSONTokener(response.json()).nextValue();
         List<JSONObject> resultJsonObjects = new JsonProcessor().selectJsonObjects(selector, json);
-        assertEquals(count, resultJsonObjects.size());
+        assertThat(resultJsonObjects.size(), is(count));
     }
 
     public static void assertCollectionToBeUndefined(String selector, RowIterator rowIterator) {

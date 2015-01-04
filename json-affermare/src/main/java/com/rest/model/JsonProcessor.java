@@ -7,9 +7,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
-import static com.hyphen.Hyphen.filter;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang.StringUtils.EMPTY;
 
 public class JsonProcessor {
@@ -76,7 +80,6 @@ public class JsonProcessor {
         return filter(selectJsonObjects(selector,json), d -> valuesList.contains(getValueFromJsonObject(d,key).toString()));
     }
 
-
     private  String restOfSelectors(String selector) {
         selector = formatSelector(selector);
 
@@ -141,5 +144,15 @@ public class JsonProcessor {
             throw new RuntimeException("Key not found in json " + key);
         }
         return result;
+    }
+
+
+    //Duplicated logic from Hyphen to avoid including one more dependency. Till Hyphen goes to maven.
+    public static <O, T extends Collection<O>> T filter(T collection, Predicate<? super O> predicate) {
+        return collect(collection.stream().filter(predicate), collection);
+    }
+
+    static <I,O, C extends Collection<I>, R extends Collection<O>> R collect(Stream<O> stream, C collection) {
+        return (R) (collection instanceof List ? stream.collect(toList()) : stream.collect(toSet()));
     }
 }
