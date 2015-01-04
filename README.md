@@ -243,7 +243,7 @@ List of objects with one to many association
                     }
                 ]
 
-                Then I verify that the json has the following books
+                Then I verify that the json has the following books with authors
                       | isbn        | name                    |   authors.id    | authors.name      |
                       | isbn123     | Test driven development |     1000        | Kent Beck         |
                       | isbn123     | Test driven development |     1001        | Martin Fowler     |
