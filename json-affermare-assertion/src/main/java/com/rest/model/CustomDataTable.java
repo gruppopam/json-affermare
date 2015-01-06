@@ -28,11 +28,21 @@ public class CustomDataTable {
     private List<Map<String, String>> removeIgnoredValues(List<Map<String, String>> maps) {
         List<Map<String, String>> toBeReturned = new ArrayList<>();
         for (Map<String, String> map : maps) {
-            HashMap<String, String> newMap = new HashMap<>(map);
-            map.keySet().stream().filter(key -> map.get(key).equals("-")).forEach(newMap::remove);
+            HashMap<String, String> newMap = filterIgnoredValues(map);
             toBeReturned.add(newMap);
         }
         return toBeReturned;
+    }
+
+    private HashMap<String, String> filterIgnoredValues(Map<String, String> map) {
+        HashMap<String, String> newMap = new HashMap<>(map);
+        //map.keySet().stream().filter(key -> map.get(key).equals("-")).forEach(newMap::remove);
+        for (String key : newMap.keySet()) {
+            if(map.get(key).equals("-")){
+                newMap.remove(key);
+            }
+        }
+        return newMap;
     }
 
     public List<Map<String, String>> asMaps() {

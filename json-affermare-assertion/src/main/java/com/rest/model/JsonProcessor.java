@@ -7,13 +7,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang.StringUtils.EMPTY;
 
 public class JsonProcessor {
@@ -72,12 +66,28 @@ public class JsonProcessor {
     }
 
     public List<JSONObject> filterAndSelectJsonObjects(String selector, Object json, String key, String value) throws JSONException {
-        return filter(selectJsonObjects(selector,json), d -> getValueFromJsonObject(d,key).toString().equals(value));
+        //return filter(selectJsonObjects(selector,json), d -> getValueFromJsonObject(d,key).toString().equals(value));
+        List<JSONObject> result = new ArrayList<JSONObject>();
+        List<JSONObject> selectedObjects = selectJsonObjects(selector, json);
+        for (JSONObject d : selectedObjects) {
+            if(getValueFromJsonObject(d,key).toString().equals(value)){
+                result.add(d);
+            }
+        }
+        return result;
     }
 
     public List<JSONObject> inFilterAndSelectJsonObjects(String selector, Object json, String key, String values) throws JSONException {
         List<String> valuesList = Arrays.asList(values.split(","));
-        return filter(selectJsonObjects(selector,json), d -> valuesList.contains(getValueFromJsonObject(d,key).toString()));
+        //return filter(selectJsonObjects(selector,json), d -> valuesList.contains(getValueFromJsonObject(d,key).toString()));
+        List<JSONObject> result = new ArrayList<>();
+        List<JSONObject> selectedObjects = selectJsonObjects(selector,json);
+        for (JSONObject d : selectedObjects) {
+            if(valuesList.contains(getValueFromJsonObject(d, key).toString())){
+                result.add(d);
+            }
+        }
+        return result;
     }
 
     private  String restOfSelectors(String selector) {
@@ -148,11 +158,11 @@ public class JsonProcessor {
 
 
     //Duplicated logic from Hyphen to avoid including one more dependency. Till Hyphen goes to maven.
-    public static <O, T extends Collection<O>> T filter(T collection, Predicate<? super O> predicate) {
+    /*public static <O, T extends Collection<O>> T filter(T collection, Predicate<? super O> predicate) {
         return collect(collection.stream().filter(predicate), collection);
     }
 
     static <I,O, C extends Collection<I>, R extends Collection<O>> R collect(Stream<O> stream, C collection) {
         return (R) (collection instanceof List ? stream.collect(toList()) : stream.collect(toSet()));
-    }
+    }*/
 }
