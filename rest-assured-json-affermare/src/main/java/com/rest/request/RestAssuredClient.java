@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import java.util.Map;
 
 import static com.jayway.restassured.RestAssured.given;
+import static com.jayway.restassured.http.ContentType.JSON;
 
 public class RestAssuredClient {
 
@@ -43,7 +44,7 @@ public class RestAssuredClient {
 
     @Then("^I make a PUT to \"([^\"]*)\" with body$")
     public void I_make_a_PUT_to_with_body(String path, DataTable table) throws Throwable {
-        Response response = new RestAssuredResponse(given().body(payload(table)).put(path));
+        Response response = new RestAssuredResponse(given().contentType(JSON).body(payload(table)).put(path));
         ResponseStorage.initialize(response);
     }
 
@@ -61,7 +62,7 @@ public class RestAssuredClient {
 
     @Then("^I make a POST to \"([^\"]*)\" with body$")
     public void I_make_a_POST_to_with_body(String path, DataTable table) throws Throwable {
-        Response response = new RestAssuredResponse(given().body(payload(table)).post(path));
+        Response response = new RestAssuredResponse(given().contentType(JSON).body(payload(table)).post(path));
         ResponseStorage.initialize(response);
     }
 
