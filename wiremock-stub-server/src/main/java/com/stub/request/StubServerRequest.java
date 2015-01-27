@@ -39,6 +39,15 @@ public class StubServerRequest {
                 );
     }
 
+    @Then("^I stub a GET to \"([^\"]*)\" \"([^\"]*)\"$")
+    public void I_stub_a_GET_to(String server, String url) throws Throwable {
+        getServer(server).
+                stubFor(
+                        get(urlEqualTo(url))
+                                .willReturn(aResponse().withStatus(200))
+                );
+    }
+
 
     private String json(DataTable table) {
         return StringUtils.join(table.flatten().toArray(), "");
