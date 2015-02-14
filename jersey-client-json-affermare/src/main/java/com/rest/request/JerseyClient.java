@@ -5,6 +5,7 @@ import com.rest.response.Response;
 import com.rest.response.ResponseStorage;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import cucumber.api.DataTable;
 import cucumber.api.java.en.Then;
@@ -12,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.Map;
+import java.util.HashMap;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 
@@ -48,6 +50,25 @@ public class JerseyClient {
         ResponseStorage.initialize(response);
     }
 
+    @Then("^I make a PUT to \"([^\"]*)\" with header \"([^\"]*)\" with body$")
+    public void I_make_a_PUT_to_with_body_and_headers(String path, String headers, DataTable table) throws Throwable {
+        String[] header = headers.split("=");
+        Map<String, String> headersMap = new HashMap<>();
+        if(header.length == 2) {
+            headersMap.put(header[0], header[1]);
+        }
+
+        WebResource.Builder putResourceBuilder = new Client().resource(BASE_URL + path)
+                .type(APPLICATION_JSON_TYPE);
+
+        for (Map.Entry<String, String> entry : headersMap.entrySet()) {
+            putResourceBuilder.header(entry.getKey(),entry.getValue());
+        }
+
+        Response response = new JerseyClientResponse(putResourceBuilder.put(ClientResponse.class, payload(table)));
+        ResponseStorage.initialize(response);
+    }
+
     @Then("^I make a POST to \"([^\"]*)\"$")
     public void I_make_a_POST_to(String path) throws Throwable {
         Response response = new JerseyClientResponse(new Client().resource(BASE_URL + path).post(ClientResponse.class));
@@ -59,6 +80,24 @@ public class JerseyClient {
         Response response = new JerseyClientResponse(new Client().resource(BASE_URL + path)
                 .type(APPLICATION_JSON_TYPE)
                 .post(ClientResponse.class, payload(table)));
+        ResponseStorage.initialize(response);
+    }
+
+    @Then("^I make a POST to \"([^\"]*)\" with header \"([^\"]*)\" with body$")
+    public void I_make_a_POST_to_with_body_and_headers(String path, String headers, DataTable table) throws Throwable {
+        String[] header = headers.split("=");
+        Map<String, String> headersMap = new HashMap<>();
+        if(header.length == 2) {
+            headersMap.put(header[0], header[1]);
+        }
+
+        WebResource.Builder postResourceBuilder = new Client().resource(BASE_URL + path)
+                .type(APPLICATION_JSON_TYPE);
+
+        for (Map.Entry<String, String> entry : headersMap.entrySet()) {
+            postResourceBuilder.header(entry.getKey(),entry.getValue());
+        }
+        Response response = new JerseyClientResponse(postResourceBuilder.post(ClientResponse.class, payload(table)));
         ResponseStorage.initialize(response);
     }
 
