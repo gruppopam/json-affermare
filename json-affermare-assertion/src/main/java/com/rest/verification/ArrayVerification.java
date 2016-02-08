@@ -60,7 +60,7 @@ public class ArrayVerification {
     }
 
     public void I_verify_the_root_collection_does_not_contain(DataTable table) throws Throwable {
-        TableIterator tableIterator = new TableIterator(table.asMaps());
+        TableIterator tableIterator = new TableIterator(table.asMaps(String.class, String.class));
         while (tableIterator.hasNext()) {
             RowIterator rowIterator = tableIterator.next();
             assertCollectionToBeUndefined("", rowIterator);

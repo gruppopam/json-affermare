@@ -12,8 +12,10 @@ import cucumber.api.java.en.Then;
 import org.apache.commons.lang.StringUtils;
 
 import javax.ws.rs.core.MultivaluedMap;
+import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 
@@ -112,12 +114,12 @@ public class JerseyClient {
     }
 
     private String payload(DataTable table) {
-        return StringUtils.join(table.flatten().toArray(), "");
+        return table.raw().stream().flatMap(Collection::stream).collect(Collectors.joining(""));
     }
 
     private MultivaluedMap<String, String> map(DataTable table) {
         MultivaluedMap<String, String> result = new MultivaluedMapImpl();
-        Map<String, String> stringStringMap = table.asMaps().get(0);
+        Map<String, String> stringStringMap = table.asMaps(String.class, String.class).get(0);
         for (Map.Entry<String, String> entry : stringStringMap.entrySet()) {
             result.add(entry.getKey(), entry.getValue());
         }

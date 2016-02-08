@@ -22,7 +22,7 @@ public class CustomDataTable {
 
     public CustomDataTable(DataTable dataTable) {
         this.dataTable = dataTable;
-        maps = removeIgnoredValues(dataTable.asMaps());
+        maps = removeIgnoredValues(dataTable.asMaps(String.class, String.class));
     }
 
     private List<Map<String, String>> removeIgnoredValues(List<Map<String, String>> maps) {
@@ -49,7 +49,7 @@ public class CustomDataTable {
         return maps;
     }
 
-    public List<Object> tableAsPrimitiveList(Class<?> aClass) {
+    public List tableAsPrimitiveList(Class<?> aClass) {
         return dataTable.asList(aClass);
     }
 

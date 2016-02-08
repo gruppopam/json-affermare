@@ -8,7 +8,9 @@ import cucumber.api.DataTable;
 import cucumber.api.java.en.Then;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.http.ContentType.JSON;
@@ -73,11 +75,11 @@ public class RestAssuredClient {
     }
 
     private String payload(DataTable table) {
-        return StringUtils.join(table.flatten().toArray(), "");
+        return table.raw().stream().flatMap(Collection::stream).collect(Collectors.joining(""));
     }
 
     private Map<String, String> params(DataTable table) {
-        return table.asMaps().get(0);
+        return table.asMaps(String.class, String.class).get(0);
     }
 
 
