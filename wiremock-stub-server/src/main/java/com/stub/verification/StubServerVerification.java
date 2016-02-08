@@ -4,6 +4,9 @@ import cucumber.api.DataTable;
 import cucumber.api.java.en.Then;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.stub.StubServerDriver.getServer;
 
@@ -23,7 +26,7 @@ public class StubServerVerification {
     }
 
     private String json(DataTable table) {
-        return StringUtils.join(table.flatten().toArray(), "");
+        return table.raw().stream().flatMap(Collection::stream).collect(Collectors.joining(""));
     }
 
 }
