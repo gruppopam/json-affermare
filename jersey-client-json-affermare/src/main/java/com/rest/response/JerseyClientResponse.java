@@ -1,15 +1,16 @@
 package com.rest.response;
 
-import com.sun.jersey.api.client.ClientResponse;
 
-public class JerseyClientResponse implements Response{
+import javax.ws.rs.core.Response;
 
-    private final ClientResponse clientResponse;
+public class JerseyClientResponse implements RestResponse {
+
+    private final Response clientResponse;
     private final String json;
 
-    public JerseyClientResponse(ClientResponse clientResponse) {
+    public JerseyClientResponse(Response clientResponse) {
         this.clientResponse = clientResponse;
-        this.json = clientResponse.getEntity(String.class);
+        this.json = clientResponse.readEntity(String.class);
     }
 
     @Override

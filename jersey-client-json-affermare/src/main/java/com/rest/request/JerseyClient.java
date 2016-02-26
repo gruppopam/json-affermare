@@ -1,20 +1,21 @@
 package com.rest.request;
 
 import com.rest.response.JerseyClientResponse;
-import com.rest.response.Response;
 import com.rest.response.ResponseStorage;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.rest.response.RestResponse;
 import cucumber.api.DataTable;
 import cucumber.api.java.en.Then;
-import org.apache.commons.lang.StringUtils;
 
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import java.util.Collection;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
@@ -25,30 +26,31 @@ public class JerseyClient {
 
     @Then("^I make a GET to \"([^\"]*)\"$")
     public void I_make_a_GET_to(String path) throws Throwable {
-        Response response = new JerseyClientResponse(new Client().resource(BASE_URL + path).get(ClientResponse.class));
-        ResponseStorage.initialize(response);
+        Response response = ClientBuilder.newClient().target(BASE_URL).path(path)
+                .request().get();
+        JerseyClientResponse jerseyClientResponse = new JerseyClientResponse(response);
+        ResponseStorage.initialize(jerseyClientResponse);
     }
 
     @Then("^I make a GET to \"([^\"]*)\" with params$")
     public void I_make_a_GET_to_with_params(String path, DataTable table) throws Throwable {
-        Response response = new JerseyClientResponse(
-                new Client().resource(BASE_URL + path)
-                        .queryParams(map(table))
-                        .get(ClientResponse.class));
+        WebTarget webTarget = ClientBuilder.newClient().target(BASE_URL).path(path);
+        map(table).entrySet().stream().forEach(entry -> webTarget.queryParam(entry.getKey(), entry.getValue()));
+        RestResponse response = new JerseyClientResponse(webTarget.request().get());
         ResponseStorage.initialize(response);
     }
 
     @Then("^I make a PUT to \"([^\"]*)\"$")
     public void I_make_a_PUT_to(String path) throws Throwable {
-        Response response = new JerseyClientResponse(new Client().resource(BASE_URL + path).put(ClientResponse.class));
+        RestResponse response = new JerseyClientResponse(ClientBuilder.newClient().target(BASE_URL).path(path).request().put(null));
         ResponseStorage.initialize(response);
     }
 
     @Then("^I make a PUT to \"([^\"]*)\" with body$")
     public void I_make_a_PUT_to_with_body(String path, DataTable table) throws Throwable {
-        Response response = new JerseyClientResponse(new Client().resource(BASE_URL + path)
-                .type(APPLICATION_JSON_TYPE)
-                .put(ClientResponse.class, payload(table)));
+        RestResponse response = new JerseyClientResponse(ClientBuilder.newClient().target(BASE_URL).path(path)
+                .request(APPLICATION_JSON_TYPE)
+                .put(payload(table)));
         ResponseStorage.initialize(response);
     }
 
@@ -58,32 +60,32 @@ public class JerseyClient {
         Map<String, String> headersMap = new HashMap<>();
         for (String token : headerTokens) {
             String[] headerKeyValue = token.split("=");
-            if(headerKeyValue.length == 2) {
+            if (headerKeyValue.length == 2) {
                 headersMap.put(headerKeyValue[0], headerKeyValue[1]);
             }
         }
-        WebResource.Builder putResourceBuilder = new Client().resource(BASE_URL + path)
-                .type(APPLICATION_JSON_TYPE);
+        Invocation.Builder putResourceBuilder = ClientBuilder.newClient().target(BASE_URL).path(path)
+                .request(APPLICATION_JSON_TYPE);
 
         for (Map.Entry<String, String> entry : headersMap.entrySet()) {
-            putResourceBuilder.header(entry.getKey(),entry.getValue());
+            putResourceBuilder.header(entry.getKey(), entry.getValue());
         }
 
-        Response response = new JerseyClientResponse(putResourceBuilder.put(ClientResponse.class, payload(table)));
+        RestResponse response = new JerseyClientResponse(putResourceBuilder.put(Entity.entity(payload(table), APPLICATION_JSON_TYPE)));
         ResponseStorage.initialize(response);
     }
 
     @Then("^I make a POST to \"([^\"]*)\"$")
     public void I_make_a_POST_to(String path) throws Throwable {
-        Response response = new JerseyClientResponse(new Client().resource(BASE_URL + path).post(ClientResponse.class));
+        RestResponse response = new JerseyClientResponse(ClientBuilder.newClient().target(BASE_URL).path(path).request().post(null));
         ResponseStorage.initialize(response);
     }
 
     @Then("^I make a POST to \"([^\"]*)\" with body$")
     public void I_make_a_POST_to_with_body(String path, DataTable table) throws Throwable {
-        Response response = new JerseyClientResponse(new Client().resource(BASE_URL + path)
-                .type(APPLICATION_JSON_TYPE)
-                .post(ClientResponse.class, payload(table)));
+        RestResponse response = new JerseyClientResponse(ClientBuilder.newClient().target(BASE_URL).path(path)
+                .request(APPLICATION_JSON_TYPE)
+                .post(Entity.entity(payload(table), APPLICATION_JSON_TYPE)));
         ResponseStorage.initialize(response);
     }
 
@@ -93,32 +95,32 @@ public class JerseyClient {
         Map<String, String> headersMap = new HashMap<>();
         for (String token : headerTokens) {
             String[] headerKeyValue = token.split("=");
-            if(headerKeyValue.length == 2) {
+            if (headerKeyValue.length == 2) {
                 headersMap.put(headerKeyValue[0], headerKeyValue[1]);
             }
         }
-        WebResource.Builder postResourceBuilder = new Client().resource(BASE_URL + path)
-                .type(APPLICATION_JSON_TYPE);
+        Invocation.Builder postResourceBuilder = ClientBuilder.newClient().target(BASE_URL).path(path).request(APPLICATION_JSON_TYPE);
 
         for (Map.Entry<String, String> entry : headersMap.entrySet()) {
-            postResourceBuilder.header(entry.getKey(),entry.getValue());
+            postResourceBuilder.header(entry.getKey(), entry.getValue());
         }
-        Response response = new JerseyClientResponse(postResourceBuilder.post(ClientResponse.class, payload(table)));
+        RestResponse response = new JerseyClientResponse(postResourceBuilder.post(Entity.entity(payload(table), APPLICATION_JSON_TYPE)));
         ResponseStorage.initialize(response);
     }
 
     @Then("^I make a DELETE to \"([^\"]*)\"$")
     public void I_make_a_DELETE_to(String path) throws Throwable {
-        Response response = new JerseyClientResponse(new Client().resource(BASE_URL + path).delete(ClientResponse.class));
+        RestResponse response = new JerseyClientResponse(ClientBuilder.newClient().target(BASE_URL).path(path).request().delete());
         ResponseStorage.initialize(response);
     }
 
-    private String payload(DataTable table) {
-        return table.raw().stream().flatMap(Collection::stream).collect(Collectors.joining(""));
+    private Entity<String> payload(DataTable table) {
+        String collect = table.raw().stream().flatMap(Collection::stream).collect(Collectors.joining(""));
+        return Entity.entity(collect, APPLICATION_JSON_TYPE);
     }
 
     private MultivaluedMap<String, String> map(DataTable table) {
-        MultivaluedMap<String, String> result = new MultivaluedMapImpl();
+        MultivaluedMap<String, String> result = new MultivaluedHashMap<>();
         Map<String, String> stringStringMap = table.asMaps(String.class, String.class).get(0);
         for (Map.Entry<String, String> entry : stringStringMap.entrySet()) {
             result.add(entry.getKey(), entry.getValue());

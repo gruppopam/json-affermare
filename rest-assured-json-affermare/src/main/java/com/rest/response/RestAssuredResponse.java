@@ -1,7 +1,7 @@
 package com.rest.response;
 
 
-public class RestAssuredResponse implements Response{
+public class RestAssuredResponse implements RestResponse {
 
     private final com.jayway.restassured.response.Response clientResponse;
     private final String json;

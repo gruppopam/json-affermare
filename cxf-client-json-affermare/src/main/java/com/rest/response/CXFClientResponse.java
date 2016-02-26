@@ -4,7 +4,7 @@ import org.apache.cxf.jaxrs.client.WebClient;
 
 import javax.ws.rs.core.MediaType;
 
-public class CXFClientResponse implements Response {
+public class CXFClientResponse implements RestResponse {
 
     private final javax.ws.rs.core.Response response;
     private final String json;

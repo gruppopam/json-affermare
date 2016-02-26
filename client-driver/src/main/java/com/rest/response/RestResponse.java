@@ -1,9 +1,7 @@
 package com.rest.response;
 
 
-public interface Response {
+public interface RestResponse {
     int status();
     String json();
-
-
 }
